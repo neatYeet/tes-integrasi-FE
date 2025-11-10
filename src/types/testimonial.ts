@@ -1,8 +1,8 @@
 // Interface untuk Testimonial
 export interface Testimonial {
-    id: string;
+    id: number;
     nama: string;
     deskripsi: string;
     rating: number;
-    createdAt: string;
+    created_at?: string;
 }

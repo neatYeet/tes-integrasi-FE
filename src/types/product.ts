@@ -1,8 +1,8 @@
 // Interface untuk Product
 export interface Product {
-    id: string;
-    name: string;
+    id: number;
+    nama: string;
+    deskripsi: string;
+    harga: number;
     gambar: string;
-    createdAt: string;
-    harga: string;
 }
