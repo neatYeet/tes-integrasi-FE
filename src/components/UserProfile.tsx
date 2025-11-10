@@ -1,11 +1,11 @@
 // Komponen UserProfile dengan authentication support
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Link } from 'react-router-dom';
 
 function UserProfile() {
-    const { isAuthenticated, logout, login, register, isLoading: authLoading, error: authError } = useAuth();
+    const { isAuthenticated, logout, login, register, isLoading: authLoading, error: authError, successMessage } = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isLoginMode, setIsLoginMode] = useState(true);
     const [loginForm, setLoginForm] = useState({ username: '', password: '' });
@@ -105,6 +105,7 @@ function UserProfile() {
                                         required
                                     />
                                     {authError && <div className="text-red-600 text-sm">{authError}</div>}
+                                    {successMessage && <div className="text-green-600 text-sm">{successMessage}</div>}
                                     <button
                                         type="submit"
                                         disabled={authLoading}
@@ -132,6 +133,7 @@ function UserProfile() {
                                         required
                                     />
                                     {authError && <div className="text-red-600 text-sm">{authError}</div>}
+                                    {successMessage && <div className="text-green-600 text-sm">{successMessage}</div>}
                                     <button
                                         type="submit"
                                         disabled={authLoading}
