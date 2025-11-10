@@ -43,6 +43,9 @@ const Admin: React.FC = () => {
         rating: 5
     });
 
+    // Hook useEffect untuk memuat data awal ketika user terautentikasi
+    // 1. Mengecek apakah user sudah login
+    // 2. Mengambil data produk dan testimonial jika terautentikasi
     useEffect(() => {
         if (isAuthenticated()) {
             fetchProducts();
@@ -50,6 +53,12 @@ const Admin: React.FC = () => {
         }
     }, [isAuthenticated]);
 
+    // Fungsi untuk menangani submit form produk (tambah atau edit)
+    // 1. Mencegah form submission default
+    // 2. Membuat FormData dengan data produk
+    // 3. Menentukan apakah update atau create berdasarkan ada tidaknya ID
+    // 4. Mengirim data ke server
+    // 5. Reset form dan refresh daftar produk
     const handleProductSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const formData = new FormData();
@@ -69,6 +78,11 @@ const Admin: React.FC = () => {
         fetchProducts();
     };
 
+    // Fungsi untuk menangani submit form testimonial
+    // 1. Mencegah form submission default
+    // 2. Mengirim data testimonial ke server
+    // 3. Reset form testimonial
+    // 4. Refresh daftar testimonial
     const handleTestimonialSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         await createTestimonial(testimonialForm);
@@ -76,6 +90,10 @@ const Admin: React.FC = () => {
         fetchTestimonials();
     };
 
+    // Fungsi untuk menangani submit form login admin
+    // 1. Mencegah form submission default
+    // 2. Memanggil fungsi login dari hook useAuth
+    // 3. Reset form jika login berhasil
     const handleLoginSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const result = await login(loginForm.username, loginForm.password);
@@ -84,6 +102,10 @@ const Admin: React.FC = () => {
         }
     };
 
+    // Fungsi untuk menangani submit form registrasi admin
+    // 1. Mencegah form submission default
+    // 2. Memanggil fungsi register dari hook useAuth
+    // 3. Reset form dan kembali ke mode login jika registrasi berhasil
     const handleRegisterSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const result = await register(registerForm.username, registerForm.password);
@@ -93,6 +115,9 @@ const Admin: React.FC = () => {
         }
     };
 
+    // Fungsi untuk mengisi form produk dengan data yang akan diedit
+    // 1. Mengatur state productForm dengan data produk yang dipilih
+    // 2. Konversi tipe data sesuai kebutuhan form
     const handleEditProduct = (product: Product) => {
         setProductForm({
             id: product.id.toString(),
@@ -103,6 +128,10 @@ const Admin: React.FC = () => {
         });
     };
 
+    // Render halaman login/registrasi jika user belum terautentikasi
+    // 1. Menampilkan form login atau registrasi berdasarkan mode
+    // 2. Menangani toggle antara login dan register
+    // 3. Menampilkan error jika ada
     if (!isAuthenticated()) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -224,6 +253,10 @@ const Admin: React.FC = () => {
         );
     }
 
+    // Render panel admin utama jika user sudah terautentikasi
+    // 1. Header dengan judul dan tombol logout
+    // 2. Section manajemen produk (form tambah/edit, daftar produk)
+    // 3. Section manajemen testimonial (form tambah, daftar testimonial)
     return (
         <div className="admin-panel">
             <div className="admin-header">

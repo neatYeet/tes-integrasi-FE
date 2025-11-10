@@ -10,9 +10,28 @@ function UserProfile() {
     const [isLoginMode, setIsLoginMode] = useState(true);
     const [loginForm, setLoginForm] = useState({ username: '', password: '' });
     const [registerForm, setRegisterForm] = useState({ username: '', password: '' });
+    const [loginErrors, setLoginErrors] = useState({ username: '', password: '' });
+    const [registerErrors, setRegisterErrors] = useState({ username: '', password: '' });
 
+    // Fungsi untuk menangani submit form login dengan validasi sisi klien
+    // 1. Mencegah form submission default
+    // 2. Melakukan validasi username dan password
+    // 3. Mengatur error state jika validasi gagal
+    // 4. Memanggil fungsi login dari hook useAuth jika valid
+    // 5. Reset form dan tutup dropdown jika login berhasil
     const handleLoginSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        let errors = { username: '', password: '' };
+        if (!loginForm.username.trim()) errors.username = 'Username is required';
+        else if (loginForm.username.length < 3) errors.username = 'Username must be at least 3 characters';
+        else if (!/^[a-zA-Z0-9_]+$/.test(loginForm.username)) errors.username = 'Username can only contain letters, numbers, and underscores';
+        if (!loginForm.password) errors.password = 'Password is required';
+        else if (loginForm.password.length < 6) errors.password = 'Password must be at least 6 characters';
+        if (errors.username || errors.password) {
+            setLoginErrors(errors);
+            return;
+        }
+        setLoginErrors({ username: '', password: '' });
         const result = await login(loginForm.username, loginForm.password);
         if (result.success) {
             setLoginForm({ username: '', password: '' });
@@ -20,8 +39,25 @@ function UserProfile() {
         }
     };
 
+    // Fungsi untuk menangani submit form registrasi dengan validasi sisi klien
+    // 1. Mencegah form submission default
+    // 2. Melakukan validasi username dan password
+    // 3. Mengatur error state jika validasi gagal
+    // 4. Memanggil fungsi register dari hook useAuth jika valid
+    // 5. Reset form dan kembali ke mode login jika registrasi berhasil
     const handleRegisterSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        let errors = { username: '', password: '' };
+        if (!registerForm.username.trim()) errors.username = 'Username is required';
+        else if (registerForm.username.length < 3) errors.username = 'Username must be at least 3 characters';
+        else if (!/^[a-zA-Z0-9_]+$/.test(registerForm.username)) errors.username = 'Username can only contain letters, numbers, and underscores';
+        if (!registerForm.password) errors.password = 'Password is required';
+        else if (registerForm.password.length < 6) errors.password = 'Password must be at least 6 characters';
+        if (errors.username || errors.password) {
+            setRegisterErrors(errors);
+            return;
+        }
+        setRegisterErrors({ username: '', password: '' });
         const result = await register(registerForm.username, registerForm.password);
         if (result.success) {
             setRegisterForm({ username: '', password: '' });
@@ -29,12 +65,17 @@ function UserProfile() {
         }
     };
 
+    // Fungsi untuk menangani logout
+    // 1. Memanggil fungsi logout dari hook useAuth
+    // 2. Menutup dropdown setelah logout
     const handleLogout = () => {
         logout();
         setIsDropdownOpen(false);
     };
 
-    // Tampilkan pesan loading untuk auth
+    // Tampilkan komponen loading jika sedang dalam proses autentikasi
+    // 1. Menampilkan spinner animasi
+    // 2. Menampilkan teks "Loading..." dengan styling yang sesuai
     if (authLoading) {
         return (
             <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
@@ -46,7 +87,11 @@ function UserProfile() {
         );
     }
 
-    // Tampilkan button untuk login/register jika belum authenticated
+    // Tampilkan UI untuk login/register jika user belum terautentikasi
+    // 1. Tombol utama untuk membuka dropdown
+    // 2. Dropdown dengan tab login/register
+    // 3. Form login atau register sesuai mode yang dipilih
+    // 4. Link ke admin panel
     if (!isAuthenticated()) {
         return (
             <div className="relative">
@@ -96,6 +141,7 @@ function UserProfile() {
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
                                         required
                                     />
+                                    {loginErrors.username && <div className="text-red-500 text-xs">{loginErrors.username}</div>}
                                     <input
                                         type="password"
                                         placeholder="Password"
@@ -104,6 +150,7 @@ function UserProfile() {
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
                                         required
                                     />
+                                    {loginErrors.password && <div className="text-red-500 text-xs">{loginErrors.password}</div>}
                                     {authError && <div className="text-red-600 text-sm">{authError}</div>}
                                     {successMessage && <div className="text-green-600 text-sm">{successMessage}</div>}
                                     <button
@@ -124,6 +171,7 @@ function UserProfile() {
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
                                         required
                                     />
+                                    {registerErrors.username && <div className="text-red-500 text-xs">{registerErrors.username}</div>}
                                     <input
                                         type="password"
                                         placeholder="Password"
@@ -132,6 +180,7 @@ function UserProfile() {
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
                                         required
                                     />
+                                    {registerErrors.password && <div className="text-red-500 text-xs">{registerErrors.password}</div>}
                                     {authError && <div className="text-red-600 text-sm">{authError}</div>}
                                     {successMessage && <div className="text-green-600 text-sm">{successMessage}</div>}
                                     <button
@@ -160,7 +209,9 @@ function UserProfile() {
         );
     }
 
-    // Tampilkan profile untuk user yang sudah login
+    // Tampilkan UI profile untuk user yang sudah login
+    // 1. Tombol untuk membuka dropdown profile
+    // 2. Dropdown dengan opsi Admin Panel dan Logout
     return (
         <div className="relative">
             <button
