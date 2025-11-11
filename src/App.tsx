@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import ProductList from './components/ProductList';
 import TestimonialList from './components/TestimonialList';
 import UserProfile from './components/UserProfile';
-import Admin from './pages/Admin';
 
 function App() {
   return (
@@ -13,7 +12,6 @@ function App() {
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-4">
                 <Link to="/" className="text-2xl font-bold text-gray-900">Web</Link>
-                <Link to="/admin" className="text-blue-600 hover:text-blue-800">Admin</Link>
               </div>
               <UserProfile />
             </div>
@@ -83,7 +81,7 @@ function App() {
               </div>
             </main>
           } />
-          <Route path="/admin" element={<Admin />} />
+          <Route />
         </Routes>
       </div>
     </Router>
